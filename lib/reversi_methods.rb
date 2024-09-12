@@ -67,7 +67,6 @@ module ReversiMethods
 
     next_pos = target_pos.next_position(direction)
     if (next_pos.stone_color(board) == attack_stone_color) && target_pos.stone_color(board) != BLANK_CELL || turn(board, next_pos, attack_stone_color, direction) 
-      # &&から||の記述は不要？
       board[target_pos.row][target_pos.col] = attack_stone_color
       true
     else
@@ -82,14 +81,13 @@ module ReversiMethods
   def placeable?(board, attack_stone_color)
     board.each_with_index do |cols, row|
       cols.each_with_index do |cell, col|
-        unless cell == BLANK_CELL
-          return false
+        if cell == BLANK_CELL
+          position = Position.new(row, col)
+          return true if put_stone(board, position.to_cell_ref, attack_stone_color, dry_run: true)
         end
-
-        position = Position.new(row, col)
-        return true if put_stone(board, position.to_cell_ref, attack_stone_color, dry_run: true)
       end
     end
+    return false
   end
 
   def count_stone(board, stone_color)
